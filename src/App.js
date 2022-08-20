@@ -12,7 +12,7 @@ import axios from 'axios';
 
 
 function App() {
-  const CLIENT_ID = "4309352159504a81b378691b675fd78f"
+const CLIENT_ID = "4309352159504a81b378691b675fd78f"
 const REDIRECT_URI = "http://localhost:3000"
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
 const RESPONSE_TYPE = "token"
@@ -22,19 +22,22 @@ const [token, setToken] = useState("")
 const [searchKey, setSearchKey] = useState("")
 const [artists, setArtists] = useState([])
 
+const [newAlbums, setNewAlbums] = useState([])
+const [topArtists, setTopArtists] = useState([])
+
+
 useEffect(() => {
   const hash = window.location.hash
   let token = window.localStorage.getItem("token")
-
+  
   if (!token && hash) {
-      token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
-
-      window.location.hash = ""
-      window.localStorage.setItem("token", token)
+    token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
+    
+    window.location.hash = ""
+    window.localStorage.setItem("token", token)
   }
-
+  
   setToken(token)
-
 }, [])
 
 const logout = () => {
@@ -68,6 +71,45 @@ const renderArtists = () => {
   ))
 }
 
+const selectTopArtists = async (e) => {
+  e.preventDefault()
+  // const {data} = await axios.get("https://api.spotify.com/v1/artists/"+{id}+"/top-tracks", {
+  const {data} = await axios.get("https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg/top-tracks", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json" 
+    },
+    params: {
+      market: "ES"
+    }
+  })
+  setTopArtists(data.tracks);
+  console.log(data.tracks)
+  // console.log(data.tracks[0].album.name)
+}
+
+const renderTopArtists = () => {
+  return topArtists.map(album => (
+    <div key={album.id}>
+      {/* {tracks.album.length ? <img width={"100%"} src={tracks.images[0].url} alt=""/> : <div>No Image</div>} */}
+      {album.name}
+    </div>
+  ))
+}
+
+useEffect(() => {
+  async function newReleaseAlbum() {
+    const response = await axios.get("https://api.spotify.com/v1/browse/new-releases", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json" 
+      }
+    })
+    setNewAlbums(response.data.albums.items);
+  }
+  newReleaseAlbum() 
+},[token])
+
   return (
     <div className="App">
       <header className="App-header">
@@ -85,7 +127,29 @@ const renderArtists = () => {
       }
 
     {renderArtists()}
-      </header>
+    <div>
+      {token ?
+        <form onSubmit={selectTopArtists}>
+          <button type={"submit"}>Top-Artists</button>
+        </form>
+       :
+      <></>
+      }
+      {renderTopArtists()}
+    </div>
+    </header>
+    <main>
+      {/* {token ?
+        (<div>
+          {newAlbums.map(album => (
+            <div key={album.id}>
+              {album.images.length ? <img width={"100%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
+              {album.name}
+            </div>
+          ))}
+        </div>)
+      :(<></>)} */}
+    </main>
     </div>
   );
 }
