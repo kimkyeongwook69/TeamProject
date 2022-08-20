@@ -89,10 +89,11 @@ const selectTopArtists = async (e) => {
 }
 
 const renderTopArtists = () => {
-  return topArtists.map(album => (
-    <div key={album.id}>
-      {/* {tracks.album.length ? <img width={"100%"} src={tracks.images[0].url} alt=""/> : <div>No Image</div>} */}
-      {album.name}
+  return topArtists.map(tracks => (
+    <div key={tracks.id}>
+      {tracks.album.images ? <img width={"100%"} src={tracks.album.images[0].url} alt=""/> : <div>No Image</div>}
+      {console.log(tracks.album.images[0])}
+      {tracks.name}
     </div>
   ))
 }
