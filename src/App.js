@@ -1,8 +1,6 @@
 import './App.css';
 import {useEffect, useState} from 'react';
-import { Compilation } from './Common/page';
 import axios from 'axios';
-import { Routes, Route } from 'react-router-dom';
 
 // npm install axios
 
@@ -12,17 +10,19 @@ import { Routes, Route } from 'react-router-dom';
 // https://dev.to/dom_the_dev/how-to-use-the-spotify-api-in-your-react-js-app-50pn
 
 function App() {
-  const CLIENT_ID = "4309352159504a81b378691b675fd78f"
-  const REDIRECT_URI = "http://localhost:3000"
-  const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
-  const RESPONSE_TYPE = "token"
+const CLIENT_ID = "4309352159504a81b378691b675fd78f"
+const REDIRECT_URI = "http://localhost:3000"
+const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
+const RESPONSE_TYPE = "token"
 
 const [token, setToken] = useState("")
 
 const [searchKey, setSearchKey] = useState("")
 const [artists, setArtists] = useState([])
-const [album, setAlbum] = useState([])
+
 const [newAlbums, setNewAlbums] = useState([])
+const [topArtists, setTopArtists] = useState([])
+
 
 useEffect(() => {
   const hash = window.location.hash
@@ -43,7 +43,6 @@ const logout = () => {
   window.localStorage.removeItem("token")
 }
 
-// 아티스트 검색
 const searchArtists = async (e) => {
   e.preventDefault()
   const {data} = await axios.get("https://api.spotify.com/v1/search", {
@@ -60,119 +59,98 @@ const searchArtists = async (e) => {
 
   console.log(data)
 }
+
 const renderArtists = () => {
   return artists.map(artist => (
       <div key={artist.id}>
-          {artist.images.length ? <img width={"50%"} src={artist.images[0].url} alt=""/> : <div>No Image</div>}
+          {artist.images.length ? <img width={"100%"} src={artist.images[0].url} alt=""/> : <div>No Image</div>}
           {artist.name}
       </div>
   ))
 }
+// popularity
 
-// 앨범 검색
-const searchAlbum = async (e) => {
+const selectTopArtists = async (e) => {
   e.preventDefault()
-  const {data} = await axios.get("https://api.spotify.com/v1/search", {
-      headers: {
-          Authorization: `Bearer ${token}`
-      },
-      params: {
-          q: searchKey,
-          type: "album"
-      }
+  // const {data} = await axios.get("https://api.spotify.com/v1/artists/"+{id}+"/top-tracks", {
+  const {data} = await axios.get("https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg/top-tracks", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    params: {
+      market: "ES"
+    }
   })
-
-  setArtists(data.album.items)
-  console.log(data)
+  setTopArtists(data.tracks);
+  console.log(data.tracks)
+  // console.log(data.tracks[0].album.name)
 }
-const renderAlbum = () => {
-  return album.map(album => (
-    <div key={album.id}>
-        {album.images.length ? <img width={"50%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
-        <p>
-          Title  : {album.name} <br />
-          {/* Artist : {album.artists[0].name} <br />
-          Release Date : {album.release_date}<br /> */}
-        </p>
+
+const renderTopArtists = () => {
+  return topArtists.map(tracks => (
+    <div key={tracks.id}>
+      {tracks.album.images ? <img width={"30%"} src={tracks.album.images[0].url} alt=""/> : <div>No Image</div>}
+      {console.log(tracks.album.images[0])}
+      {tracks.name}
     </div>
-))
+  ))
 }
 
-// album_type: 'compilation' 앨범 검색
-// const [compilationAlbum, setCompilationAlbum] = useState([])
 // useEffect(() => {
-//   async function compilationReleaseAlbum() {
-//     const response = await axios.get("https://api.spotify.com/v1/albums/id", {
+//   async function newReleaseAlbum() {
+//     const response = await axios.get("https://api.spotify.com/v1/browse/new-releases", {
 //       headers: {
 //         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//         "album_type" : "Compilation"
+//         "Content-Type": "application/json" 
 //       }
 //     })
+//     setNewAlbums(response.data.albums.items);
 //   }
-//   compilationReleaseAlbum()
-// }, [token]);
-
-// new-releases
-useEffect(() => {
-  async function newReleaseAlbum() {
-    const response = await axios.get("https://api.spotify.com/v1/browse/new-releases", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "country" : "SE"
-      }
-    })
-    setNewAlbums(response.data.albums.items);
-  }
-  newReleaseAlbum() 
-},[token])
-
+//   newReleaseAlbum() 
+// },[token])
 
   return (
-    
-      <div className="App">
-        <header className="App-header">
-        <h1>Spotify React</h1>
-        {!token ?
-          <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
-            to Spotify</a>
-          : <button onClick={logout}>Logout</button>}
-        {token ?
-          <form onSubmit={searchArtists}>
-              <input type="text" onChange={e => setSearchKey(e.target.value)}/>
-              <button type={"submit"}>Search</button>
-          </form>
-          : <h2>Please Login</h2>
-        }
+    <div className="App">
+      <header className="App-header">
+      <h1>Spotify React</h1>
+      {!token ?
+                    <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
+                        to Spotify</a>
+                    : <button onClick={logout}>Logout</button>}
+      {token ?
+        <form onSubmit={searchArtists}>
+            <input type="text" onChange={e => setSearchKey(e.target.value)}/>
+            <button type={"submit"}>Search</button>
+        </form>
+        : <h2>Please Login</h2>
+      }
 
-      {renderArtists()}
-      <nav>
-        <li>aa</li>
-        <li>bb</li>
-        <a href='https://api.spotify.com/v1/browse/new-releases'><li>Compilation</li></a>
-      </nav>
-      </header>
-      <main>
-        {token ?
-          (<div>
-            {newAlbums.map(album => (
-              <div key={album.id}>
-                {album.images.length ? <img width={"50%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
-                <p>
-                  Title  : {album.name} <br />
-                  {console.log(album)}
-                  {/* Artist : {album.artists[0].name} <br />
-                  Release Date : {album.release_date}<br /> */}
-                  {/* album_type: 'compilation' */}
-                </p>
-              </div>
-            ))}
-          </div>)
-        :(<></>)}
-        
-      </main>
-      </div>
+    {renderArtists()}
+    <div>
+      {token ?
+        <form onSubmit={selectTopArtists}>
+          <button type={"submit"}>Top-Artists</button>
+        </form>
+      :
+      <></>
+      }
+      {renderTopArtists()}
+    </div>
+    </header>
+    <main>
+      {/* {token ?
+        (<div>
+          {newAlbums.map(album => (
+            <div key={album.id}>
+              {album.images.length ? <img width={"100%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
+              {album.name}
+            </div>
+          ))}
+        </div>)
+      :(<></>)} */}
+    </main>
+    </div>
   );
 }
 
