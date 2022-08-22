@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import TopArtist from "./TopAlbums";
 
 function Search ({token}) {
     const [searchKey, setSearchKey] = useState("")
@@ -18,7 +19,7 @@ function Search ({token}) {
         })
     
         setalbums(data.albums.items)
-        
+    
         console.log(data)
     }
     
@@ -41,6 +42,7 @@ function Search ({token}) {
             }
         
             {renderalbums()}
+            <TopArtist value="albums.id"></TopArtist>
         </div>
     )
 }
