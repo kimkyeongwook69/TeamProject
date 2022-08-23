@@ -344,6 +344,8 @@ const logout = () => {
 //   ))
 // }
 
+const [check, setCheck] = useState(0)
+
 const searchAlbums = async (e) => {
   e.preventDefault();
   searchArea.current.classList.add("on");
@@ -358,7 +360,8 @@ const searchAlbums = async (e) => {
       }
   })
   setAlbums(data.albums.items);
-  console.log(data.albums.items)
+  setCheck(1);
+  // console.log(data.albums.items)
 }
 
 const renderAlbums = () => {
@@ -451,8 +454,7 @@ const testMove = (e) => {
           <ul>
             <MenuItem>1</MenuItem>
             <MenuItem>2</MenuItem>
-            <MenuItem><TopAlbums token={token} searchId={albums} /></MenuItem>
-            {/* {console.log(artists)} */}
+            <MenuItem><TopAlbums token={token} searchId={albums} newRelease={newAlbums} check={check} /></MenuItem>
             <MenuItem>4</MenuItem>
             <MenuItem>5</MenuItem>
             <MenuItem>6</MenuItem>
@@ -548,45 +550,7 @@ const testMove = (e) => {
         </RankingAlbums>
       </PopularandRanking>
 
-
-      {/* <div className="App">
-      <header className="App-header">
-        <h1>Spotify React</h1>
-        {!token ?
-                      <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
-                          to Spotify</a>
-                      : <button onClick={logout}>Logout</button>}
-      <Search token={token}/>
-      <TopArtist token={token} />
-    </header>
-      <NewReleaseAlbum token={token} /> */}
-    {/* </div> */}
     </main>
-
-
-    <footer>
-      <Footer>
-          <div>
-            <ul>
-              <li><a>이용약관</a></li>
-              <li><a>회사 소개</a></li>
-              <li><a>개인정보처리방침</a></li>
-              <li><a>청소년보호정책</a></li>
-              <li><a>제휴/프로모션 문의</a></li>
-              <li><a>이메일주소무단수집거부</a></li>
-              <li><a>파트너센터</a></li>
-            </ul>
-          </div>
-            <div>
-              <p>
-                (주)카카오엔터테인먼트 서울특별시 성북구 오패산로3길 104(하월곡동) | Tel. 02-940-3000 Fax. 02-942-4350 | ※ 고객지원센터 : 080-940-3333 (무료상담전화)<br/>
-                상담시간 (평일) 오전 9시 - 오후 6시 [점심시간 : 오후 12시 - 1시 ]<br/>
-                Copyright © Samyang Foods Co., Ltd All Rights Reserved.
-              </p>
-            </div>
-      </Footer>
-    </footer>
-    
     </Container>
 
 )

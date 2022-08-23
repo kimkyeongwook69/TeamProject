@@ -24,12 +24,12 @@ function Search ({token}) {
     }
     
     const renderalbums = () => {
-      return albums.map(album => (
-          <div key={album.id}>
-              {album.images.length ? <img width={"100%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
-              {album.name}
-          </div>
-      ))
+    return albums.map(album => (
+        <div key={album.id}>
+            {album.images.length ? <img width={"100%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
+            {album.name}
+        </div>
+    ))
     }
     return(
         <div>
