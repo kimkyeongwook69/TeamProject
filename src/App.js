@@ -10,6 +10,18 @@ import RankingAlbums from './component/RankingAlbums';
 import Footer from './component/Footer';
 import SearchRelatedArtists from './component/SearchRelatedArtists';
 
+<<<<<<< HEAD
+=======
+// npm install
+// npm install axios
+// npm styled-components
+
+// spotify API Reference
+// https://developer.spotify.com/documentation/web-api/reference/#/
+// How to use the Spotify API In Your React JS App
+// https://dev.to/dom_the_dev/how-to-use-the-spotify-api-in-your-react-js-app-50pn
+
+>>>>>>> origin
 const Container = styled.div`
   padding: 3rem 5rem;
   min-width: 1400px;
@@ -61,8 +73,6 @@ const SearchInput = styled.input`
   outline: none;
 `;
 
-
-
 const SearchButton = styled.button`
   position: absolute;
   background-color:transparent;
@@ -70,8 +80,6 @@ const SearchButton = styled.button`
   right: 0.5rem;
   cursor: pointer;
 `;
-
-
 
 const Ranking = styled.div`
   width: 23%;
@@ -122,19 +130,29 @@ const MenuItem = styled.li`
   font-size: 0.8rem;
 `;
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+>>>>>>> origin
 const PopularandRanking = styled.div`
   display: flex;
   font-size: 0.8rem;
   font-weight: bold;
   margin: 15px 0;
-`
+`;
 
 function App() {
+<<<<<<< HEAD
+=======
+  const [token, setToken] = useState("")
+>>>>>>> origin
 
-const [token, setToken] = useState("")
-
-const [searchKey, setSearchKey] = useState("")
-const [artists, setArtists] = useState([])
+  const [searchKey, setSearchKey] = useState("")
+  const [artists, setArtists] = useState([])
 
 const [newAlbums, setNewAlbums] = useState([])
 
@@ -150,26 +168,24 @@ const searchSelectRef = useRef("");
 const rankingItemsRef = useRef([]);
 const rankingItemsCount = useRef(1);
 
-useEffect(() => {
-  const hash = window.location.hash
-  let token = window.localStorage.getItem("token")
-  
-  if (!token && hash) {
-    token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
+  useEffect(() => {
+    const hash = window.location.hash
+    let token = window.localStorage.getItem("token")
     
-    window.location.hash = ""
-    window.localStorage.setItem("token", token)
+    if (!token && hash) {
+      token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
+      
+      window.location.hash = ""
+      window.localStorage.setItem("token", token)
+    }
+    
+    setToken(token)
+  }, [])
+
+  const logout = () => {
+    setToken("")
+    window.localStorage.removeItem("token")
   }
-  
-  setToken(token)
-
-  console.log("ttetst");
-}, [])
-
-const logout = () => {
-  setToken("")
-  window.localStorage.removeItem("token")
-}
 
 const searchArtists = async (e) => {
   e.preventDefault();
@@ -201,34 +217,43 @@ useEffect(() => {
 },[token])
 
 
+<<<<<<< HEAD
 useEffect(() => {
   const rolling = setInterval(() => {rollingBar();}, 4000);
 },[]);
+=======
 
-const rollingBar = () => {
-  if(rankingItemsCount.current > 1){
-    rankingItemsRef.current[(rankingItemsCount.current) - 2].classList.toggle("selected-after");
-  }else if(rankingItemsCount.current == 1){
-    rankingItemsRef.current[4].classList.remove("selected-after");
+
+
+  useEffect(() => {
+    const rolling = setInterval(() => {rollingBar();}, 4000);
+  },[]);
+>>>>>>> origin
+
+  const rollingBar = () => {
+    if(rankingItemsCount.current > 1){
+      rankingItemsRef.current[(rankingItemsCount.current) - 2].classList.toggle("selected-after");
+    }else if(rankingItemsCount.current == 1){
+      rankingItemsRef.current[4].classList.remove("selected-after");
+    }
+
+    if(rankingItemsCount.current != 0){
+      rankingItemsRef.current[(rankingItemsCount.current) - 1].classList.toggle("selected");
+      rankingItemsRef.current[(rankingItemsCount.current) - 1].classList.toggle("selected-after");
+
+      rankingItemsRef.current[rankingItemsCount.current].classList.toggle("selected");
+    }else{
+      rankingItemsRef.current[rankingItemsCount.current].classList.toggle("selected");
+      rankingItemsRef.current[3].classList.toggle("selected-after");
+      rankingItemsRef.current[4].classList.toggle("selected");
+      rankingItemsRef.current[4].classList.toggle("selected-after");
+    }
+
+    rankingItemsCount.current += 1;
+    if(rankingItemsCount.current == 5){
+      rankingItemsCount.current = 0;
+    }
   }
-
-  if(rankingItemsCount.current != 0){
-    rankingItemsRef.current[(rankingItemsCount.current) - 1].classList.toggle("selected");
-    rankingItemsRef.current[(rankingItemsCount.current) - 1].classList.toggle("selected-after");
-
-    rankingItemsRef.current[rankingItemsCount.current].classList.toggle("selected");
-  }else{
-    rankingItemsRef.current[rankingItemsCount.current].classList.toggle("selected");
-    rankingItemsRef.current[3].classList.toggle("selected-after");
-    rankingItemsRef.current[4].classList.toggle("selected");
-    rankingItemsRef.current[4].classList.toggle("selected-after");
-  }
-
-  rankingItemsCount.current += 1;
-  if(rankingItemsCount.current == 5){
-    rankingItemsCount.current = 0;
-  }
-}
 
 const searchRelatedArtists = (id) => {
   searchRef.current.value = id;
@@ -255,14 +280,15 @@ const searchRelatedArtists = (id) => {
           </SearchForm>
           : <h2>Please Login</h2>
         }
+        {/* <Search token={token} /> */}
 
         <Ranking>
           <ul>
-            <RankingItem className='selected' ref={elem => (rankingItemsRef.current[0] = elem)}><span>1. keyword1</span></RankingItem>
-            <RankingItem ref={elem => (rankingItemsRef.current[1] = elem)}><span>2. keyword2</span></RankingItem>
-            <RankingItem ref={elem => (rankingItemsRef.current[2] = elem)}><span>3. keyword3</span></RankingItem>
-            <RankingItem ref={elem => (rankingItemsRef.current[3] = elem)}><span>4. keyword4</span></RankingItem>
-            <RankingItem ref={elem => (rankingItemsRef.current[4] = elem)}><span>5. keyword5</span></RankingItem>
+            <RankingItem className='selected' ref={elem => (rankingItemsRef.current[0] = elem)}><span>1. 0TnOYISbd1XYRBk9myaseg</span></RankingItem>
+            <RankingItem ref={elem => (rankingItemsRef.current[1] = elem)}><span>2. 6yTYR09WCvsgdnurDW4WQo</span></RankingItem>
+            <RankingItem ref={elem => (rankingItemsRef.current[2] = elem)}><span>3. 5nkYRuiIHg2xXHFC8bfosJ</span></RankingItem>
+            <RankingItem ref={elem => (rankingItemsRef.current[3] = elem)}><span>4. 0N0d3kjwdY2h7UVuTdJGfp</span></RankingItem>
+            <RankingItem ref={elem => (rankingItemsRef.current[4] = elem)}><span>5. 7MlcYSTwlLeOtBMDJ6WOv5</span></RankingItem>
           </ul>
           
         </Ranking>
@@ -298,7 +324,10 @@ const searchRelatedArtists = (id) => {
     <footer>
       <Footer/>
     </footer>
+<<<<<<< HEAD
     
+=======
+>>>>>>> origin
     </Container>
   );
 }

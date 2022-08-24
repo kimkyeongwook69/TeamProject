@@ -4,14 +4,12 @@ import axios from 'axios';
 import styled from "styled-components";
 import {CLIENT_ID, REDIRECT_URI, AUTH_ENDPOINT, RESPONSE_TYPE} from './config'
 import Search from './component/Search';
-import TopArtist from './component/TopArtists';
 import NewReleaseAlbum from './component/NewReleaseAlbum';
 import Test from './component/Test';
 import NewAlbums from './component/NewAlbums';
 import PopularAlbums from './component/PopularAlbums';
 import RankingAlbums from './component/RankingAlbums';
 import Footer from './component/Footer';
-
 
 const Container = styled.div`
   padding: 3rem 5rem;
@@ -53,8 +51,6 @@ const SearchInput = styled.input`
   outline: none;
 `;
 
-
-
 const SearchButton = styled.button`
   position: absolute;
   background-color:transparent;
@@ -62,8 +58,6 @@ const SearchButton = styled.button`
   right: 0.5rem;
   cursor: pointer;
 `;
-
-
 
 const Ranking = styled.div`
   width: 23%;
@@ -107,8 +101,6 @@ const LogoutButton = styled.button`
   margin-left: 2rem;
   cursor: pointer;
 `;
-
-
 
 const MenuItem = styled.li`
   width: 12.5%;
@@ -232,10 +224,6 @@ useEffect(() => {
   }
   newReleaseAlbum() 
 },[token])
-
-
-
-
 
 useEffect(() => {
   const rolling = setInterval(() => {rollingBar();}, 4000);

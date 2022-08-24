@@ -79,6 +79,7 @@ function NewAlbums({token}){
             }
           })
           setNewAlbums(response.data.albums.items);
+          console.log(response.data.albums.items);
         }
         newReleaseAlbum() 
       },[token])      
@@ -131,7 +132,7 @@ function NewAlbums({token}){
               <NewAlbumListWrap ref={newAlbumWrap}>
               {newAlbums.map(album => (
                   <NewAlbum key={album.id}>
-                    {album.images.length ? <img width={"100%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
+                    {album.images.length ? <a href={album.external_urls.spotify} target="_blank"><img width={"100%"} src={album.images[0].url} alt=""/></a> : <div>No Image</div>}
                     {album.name}
                   </NewAlbum>
                 

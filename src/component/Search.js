@@ -64,26 +64,40 @@ function Search ({token, keyValue}) {
       return artists.map(artist => (
           <SearchItem key={artist.id}>
               {artist.images.length ? <a href={artist.external_urls.spotify} target="_blank"><img width={"100%"} src={artist.images[0].url} alt=""/></a> : <a href={artist.external_urls.spotify} target="_blank"><img width={"100%"} src="img/no_image.png"/></a>}
+<<<<<<< HEAD
               Artist Name : {artist.name}       <br />
               Popularity  : {artist.popularity} <br />
+=======
+              {artist.name}
+>>>>>>> origin
           </SearchItem>
       ))
     }
 
     const sortPopularity = () => {
+<<<<<<< HEAD
       setArtists([...(artists.sort((a,b) => b.popularity - a.popularity))]);
     }
 
     const sortReleaseDate = () => {
       setArtists([...React(artists.sort((Date1, Date2) => Date2.releasedate - Date1.releasedate))])
     }
+=======
+      setArtists([...(artists.sort((a,b) => b.popularity - a.popularity))]); 
+    }
+
+>>>>>>> origin
 
     return(
         <SearchArea>
             <h1>'{keyValue}' 에 대한 검색 결과 입니다.</h1>
             <SortMenu>
+<<<<<<< HEAD
                 <button onClick={sortPopularity}>인기순</button>
                 <button onClick={sortReleaseDate}>최신순</button>
+=======
+              <button onClick={sortPopularity}>인기순</button>
+>>>>>>> origin
             </SortMenu>
             {renderArtists()}
         </SearchArea>
