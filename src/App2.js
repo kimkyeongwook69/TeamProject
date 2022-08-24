@@ -6,11 +6,12 @@ import {CLIENT_ID, REDIRECT_URI, AUTH_ENDPOINT, RESPONSE_TYPE} from './config'
 import Search from './component/Search';
 import TopArtist from './component/TopArtists';
 import NewReleaseAlbum from './component/NewReleaseAlbum';
+import Test from './component/Test';
 import NewAlbums from './component/NewAlbums';
 import PopularAlbums from './component/PopularAlbums';
 import RankingAlbums from './component/RankingAlbums';
 import Footer from './component/Footer';
-import SearchRelatedArtists from './component/SearchRelatedArtists';
+
 
 const Container = styled.div`
   padding: 3rem 5rem;
@@ -44,20 +45,9 @@ const SearchForm = styled.div`
   position: relative;
 `;
 
-const SearchSelect = styled.select`
-  position: absolute;
-  border: none;
-  background-color:transparent;
-  padding: 8px 5px;
-  padding-left: 15px;
-  left: 12px;
-  outline: none;
-`
-
 const SearchInput = styled.input`
   border: 2px solid skyblue;
   padding: 0.5rem 2rem;
-  padding-left: calc(135px + 0.8rem);
   border-radius: 30px;
   width: 100%;
   outline: none;
@@ -106,6 +96,9 @@ const RankingItem = styled.li`
   }
 `;
 
+
+
+
 const LogoutButton = styled.button`
   padding: 10px 15px;
   border: 1px solid white;
@@ -114,6 +107,8 @@ const LogoutButton = styled.button`
   margin-left: 2rem;
   cursor: pointer;
 `;
+
+
 
 const MenuItem = styled.li`
   width: 12.5%;
@@ -124,6 +119,32 @@ const MenuItem = styled.li`
   font-size: 0.8rem;
 `;
 
+
+const SearchArea = styled.div`
+  margin: 15px 0;
+  padding: 1rem 3rem;
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  &.on{
+    display: flex;
+  }
+
+  & h1{
+    width: 100%;
+    padding: 30px 0;
+  }
+`;
+
+const SearchItem = styled.div`
+  width: 25%;
+  padding: 20px;
+`;
+
+
 const PopularandRanking = styled.div`
   display: flex;
   font-size: 0.8rem;
@@ -131,7 +152,11 @@ const PopularandRanking = styled.div`
   margin: 15px 0;
 `
 
-function App() {
+function App2() {
+const CLIENT_ID = "23bdd6549ab046a989e1c473266f1264"
+const REDIRECT_URI = "http://localhost:3000"
+const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
+const RESPONSE_TYPE = "token"
 
 const [token, setToken] = useState("")
 
@@ -140,14 +165,9 @@ const [artists, setArtists] = useState([])
 
 const [newAlbums, setNewAlbums] = useState([])
 
-const [searchOption, setSearchOption] = useState(0);
-
-const [artistKey,SetArtistKey] = useState("");
-
 const searchArea = useRef();
 const searchContent = useRef();
-const searchRef = useRef("");
-const searchSelectRef = useRef("");
+
 
 const rankingItemsRef = useRef([]);
 const rankingItemsCount = useRef(1);
@@ -175,19 +195,30 @@ const logout = () => {
 
 const searchArtists = async (e) => {
   e.preventDefault();
-  switch(searchSelectRef.current.value){
-    case "search":
-      setSearchKey(searchRef.current.value);
-      setSearchOption(1);
-      break;
-    case "relatedArtists":
-      SetArtistKey(searchRef.current.value);
-      setSearchOption(2);
-      break;
-    default:
-        break;
-  }
+  searchArea.current.classList.add("on");
+  searchContent.current.innerText = `'${searchKey}'에 대한 검색 결과 입니다.`;
+  const {data} = await axios.get("https://api.spotify.com/v1/search", {
+      headers: {
+          Authorization: `Bearer ${token}`
+      },
+      params: {
+          q: searchKey,
+          type: "artist"
+      }
+  })
+
+  setArtists(data.artists.items);
 }
+
+const renderArtists = () => {
+  return artists.map(artist => (
+      <SearchItem key={artist.id}>
+          {artist.images.length ? <img width={"100%"} src={artist.images[0].url} alt=""/> : <div>No Image</div>}
+          <p>{artist.name}</p>
+      </SearchItem>
+  ))
+}
+
 
 useEffect(() => {
   async function newReleaseAlbum() {
@@ -201,6 +232,9 @@ useEffect(() => {
   }
   newReleaseAlbum() 
 },[token])
+
+
+
 
 
 useEffect(() => {
@@ -232,10 +266,7 @@ const rollingBar = () => {
   }
 }
 
-const searchRelatedArtists = (id) => {
-  searchRef.current.value = id;
-  SetArtistKey(id);
-}
+
 
 
 
@@ -247,11 +278,7 @@ const searchRelatedArtists = (id) => {
           {token ?
           <SearchForm>
             <form onSubmit={searchArtists}>
-                <SearchSelect ref={searchSelectRef}>
-                  <option value="search" selected>search</option>
-                  <option value="relatedArtists" >relatedArtists</option>
-                </SearchSelect>
-                <SearchInput type="text" ref={searchRef}/>
+                <SearchInput type="text" onChange={e => setSearchKey(e.target.value)}/>
                 <SearchButton type={"submit"}><img src="img/search.png" width="32px"/></SearchButton>
             </form>
           </SearchForm>
@@ -275,7 +302,7 @@ const searchRelatedArtists = (id) => {
         </Header1>
         <nav>
           <ul>
-            {/* <MenuItem><TopAlbums token={token} searchId={albums} newRelease={newAlbums} check={check} /><a></a></MenuItem> */}
+            <MenuItem>1</MenuItem>
             <MenuItem>2</MenuItem>
             <MenuItem>3</MenuItem>
             <MenuItem>4</MenuItem>
@@ -287,9 +314,11 @@ const searchRelatedArtists = (id) => {
         </nav>
     </header>
     <main>
-      {searchOption == 1 ? <Search token={token} keyValue={searchKey}/> : <></>}
-      {searchOption == 2 ? <SearchRelatedArtists token={token} keyValue={artistKey} searchRelatedArtists={searchRelatedArtists}/> : <></>}
-      
+      <SearchArea ref={searchArea}>
+        <h1 ref={searchContent}></h1>
+        {renderArtists()}
+      </SearchArea>
+
       <NewAlbums token={token}/>
 
       <PopularandRanking>
@@ -300,9 +329,8 @@ const searchRelatedArtists = (id) => {
     <footer>
       <Footer/>
     </footer>
-    
     </Container>
   );
 }
 
-export default App;
+export default App2;

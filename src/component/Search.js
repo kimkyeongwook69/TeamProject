@@ -1,47 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styled from "styled-components";
 
-function Search ({token}) {
-    const [searchKey, setSearchKey] = useState("")
-    const [albums, setalbums] = useState([])
+const SearchArea = styled.div`
+  margin: 15px 0;
+  padding: 1rem 3rem;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  &.on{
+    display: flex;
+  }
 
-    const searchalbums = async (e) => {
-        e.preventDefault()
+  & h1{
+    width: 100%;
+    padding: 30px 0;
+  }
+`;
+
+const SearchItem = styled.div`
+  width: 25%;
+  padding: 20px;
+  align-items: center;
+`;
+
+const SortMenu = styled.div`
+  width: 100%;
+  text-align: right;
+  padding-right: 20px;
+  & button{
+    border: none;
+    padding: 5px 10px;
+    background-color: lightgray;
+    color: white;
+    cursor: pointer;
+  }
+`
+function Search ({token, keyValue}) {
+    const [artists, setArtists] = useState([])
+
+    useEffect(() => {if(keyValue != "" && {token}) {searchArtists();}}, [keyValue])
+    
+    const searchArtists = async () => {
         const {data} = await axios.get("https://api.spotify.com/v1/search", {
             headers: {
                 Authorization: `Bearer ${token}`
             },
             params: {
-                q: searchKey,
-                type: "album"
+                q: keyValue,
+                type: "artist"
             }
         })
     
-        setalbums(data.albums.items)
-        
-        console.log(data)
+        setArtists(data.artists.items)
+    
+        console.log(data.artists.items);
     }
     
-    const renderalbums = () => {
-      return albums.map(album => (
-          <div key={album.id}>
-              {album.images.length ? <img width={"100%"} src={album.images[0].url} alt=""/> : <div>No Image</div>}
-              {album.name}
-          </div>
+    const renderArtists = () => {
+      return artists.map(artist => (
+          <SearchItem key={artist.id}>
+              {artist.images.length ? <a href={artist.external_urls.spotify} target="_blank"><img width={"100%"} src={artist.images[0].url} alt=""/></a> : <a href={artist.external_urls.spotify} target="_blank"><img width={"100%"} src="img/no_image.png"/></a>}
+              {artist.name}
+          </SearchItem>
       ))
     }
+
+    const sortPopularity = () => {
+      setArtists([...(artists.sort((a,b) => b.popularity - a.popularity))]); 
+    }
+
+
     return(
-        <div>
-            {token ?
-                <form onSubmit={searchalbums}>
-                    <input type="text" onChange={e => setSearchKey(e.target.value)}/>
-                    <button type={"submit"}>Search</button>
-                </form>
-                : <h2>Please Login</h2>
-            }
-        
-            {renderalbums()}
-        </div>
+        <SearchArea>
+            <h1>'{keyValue}' 에 대한 검색 결과 입니다.</h1>
+            <SortMenu>
+                <button onClick={sortPopularity}>인기순</button>
+            </SortMenu>
+            {renderArtists()}
+        </SearchArea>
     )
 }
 
