@@ -4,8 +4,6 @@ import axios from 'axios';
 import styled from "styled-components";
 import {CLIENT_ID, REDIRECT_URI, AUTH_ENDPOINT, RESPONSE_TYPE} from './config'
 import Search from './component/Search';
-import TopArtist from './component/TopArtists';
-import NewReleaseAlbum from './component/NewReleaseAlbum';
 import NewAlbums from './component/NewAlbums';
 import PopularAlbums from './component/PopularAlbums';
 import RankingAlbums from './component/RankingAlbums';

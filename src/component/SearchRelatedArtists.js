@@ -78,8 +78,6 @@ function SearchRelatedArtists({token, keyValue, searchRelatedArtists}){
         </RelatedArtist>
         ))
       }
-
-   
       
     return (
         <RelatedArtistsWrap>
