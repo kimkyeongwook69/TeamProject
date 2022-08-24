@@ -14,8 +14,9 @@ import SearchRelatedArtists from './component/SearchRelatedArtists';
 =======
 // npm install
 // npm install axios
-// npm styled-components
-
+// npm install styled-components
+// npm install react-router-dom
+  
 // spotify API Reference
 // https://developer.spotify.com/documentation/web-api/reference/#/
 // How to use the Spotify API In Your React JS App
