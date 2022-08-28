@@ -114,8 +114,8 @@ function Search ({token}) {
             }
           });
           setArtists(data.artists.items)
-          console.log(data)
     };
+    console.log(artists)
     
     const searchAlbums = async () => {
       const {data} = await axios.get("https://api.spotify.com/v1/search", {
@@ -142,7 +142,7 @@ function Search ({token}) {
     const renderArtists = () => {
       return artists.map(artist => (
         <Artist key={artist.id}>
-          {console.log(artist.name)}
+          {/* {console.log(artist.name)} */}
         <div>
           <p>
             이름 : {artist.name}<br/>
@@ -153,7 +153,7 @@ function Search ({token}) {
         </div>
         <div>
             {artist.images.length ? <a href={artist.external_urls.spotify} target="_blank"><img width={"100%"} src={artist.images[0].url} alt=""/></a> : <a href={artist.external_urls.spotify} target="_blank"><img width={"100%"} src="img/no_image.png"/></a>}
-            {/* <a onClick={() => {searchRelatedArtists(artist.id);}}>관련 아티스트 찾기</a> */}
+            <a href={artist.external_urls.spotify}  target="_blank">Spotify 검색</a>
         </div>
       </Artist>
       ))
@@ -163,11 +163,18 @@ function Search ({token}) {
       setAlbums([...(albums.sort((a,b) => new Date(b.release_date) - new Date(a.release_date)))]);
     }
 
+    const sortPopularArtists = () => {
+      setArtists([...(artists.sort((a,b) => new Date(b.popularity) - new Date(a.popularity)))]);
+    }
+
+    const sortFollowerArtists = () => {
+      setArtists([...(artists.sort((a,b) => new Date(b.followers.total) - new Date(a.followers.total)))]);
+    }
+
     switch (searchOption) {
       case "album":
         return(
           <SearchAlbumWrap>
-              {/* <h1>'{keyValue}' 에 대한 검색 결과 입니다.</h1> */}
               <SortMenu>
                 <button onClick={sortReleaseDateAlbums}>최신순</button>
               </SortMenu>
@@ -178,6 +185,10 @@ function Search ({token}) {
       case "artist":
         return (
           <SearchArtistsWrap>
+            <SortMenu>
+              <button onClick={sortFollowerArtists}>최신순</button>
+              <button onClick={sortPopularArtists}>인기순</button>
+            </SortMenu>
               {renderArtists()}
           </SearchArtistsWrap>
       )
